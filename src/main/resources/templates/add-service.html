@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Add Service | RideVault</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #080808;
+            color: white;
+        }
+
+        .top-bar {
+            background: #111;
+            border-bottom: 3px solid #e10600;
+            padding: 20px 40px;
+        }
+
+        .top-bar h1 {
+            margin: 0;
+            color: #e10600;
+            letter-spacing: 3px;
+        }
+
+        .container {
+            width: 550px;
+            max-width: 92%;
+            margin: 50px auto;
+            background: #111;
+            padding: 35px;
+            border-top: 5px solid #e10600;
+            box-shadow: 0 0 30px rgba(225, 6, 0, 0.25);
+        }
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-top: 20px;
+            margin-bottom: 7px;
+            color: #aaa;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #333;
+            background: #050505;
+            color: white;
+            font-size: 16px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #e10600;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 30px;
+            padding: 15px;
+            border: none;
+            background: #e10600;
+            color: white;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        button:hover {
+            background: #ff120b;
+        }
+
+        .back {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: #aaa;
+            text-decoration: none;
+        }
+
+        .back:hover {
+            color: white;
+        }
+
+        .section-title {
+            margin-top: 30px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #333;
+            color: #e10600;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="top-bar">
+    <h1>RIDEVAULT</h1>
+</div>
+
+<div class="container">
+
+    <h2>Service Entry</h2>
+
+    <div class="subtitle">
+        Record maintenance performed on your machine
+    </div>
+
+    <form th:action="@{/services/add/{id}(id=${bikeId})}"
+          th:object="${serviceRecord}"
+          method="post">
+
+        <div class="section-title">
+            SERVICE DETAILS
+        </div>
+
+        <label>Service Type</label>
+
+        <select th:field="*{serviceType}" required>
+
+            <option value="">Select Service Type</option>
+
+            <option value="General Service">
+                General Service
+            </option>
+
+            <option value="Engine Oil Change">
+                Engine Oil Change
+            </option>
+
+            <option value="Major Service">
+                Major Service
+            </option>
+
+            <option value="Brake Service">
+                Brake Service
+            </option>
+
+            <option value="Chain Service">
+                Chain Service
+            </option>
+
+            <option value="Tyre Replacement">
+                Tyre Replacement
+            </option>
+
+            <option value="Other">
+                Other
+            </option>
+
+        </select>
+
+
+        <label>Service Description</label>
+
+        <textarea
+                placeholder="Example: Engine oil, oil filter and air filter replaced"
+                name="description"></textarea>
+
+
+        <div class="section-title">
+            SERVICE COST & ODOMETER
+        </div>
+
+        <label>Odometer (KM)</label>
+
+        <input
+                type="number"
+                th:field="*{odometer}"
+                placeholder="Example: 6500"
+                min="0"
+                step="0.1"
+                required>
+
+
+        <label>Service Cost (₹)</label>
+
+        <input
+                type="number"
+                th:field="*{cost}"
+                placeholder="Example: 1800"
+                min="0"
+                step="0.01"
+                required>
+
+
+        <label>Service Date</label>
+
+        <input
+                type="date"
+                th:field="*{serviceDate}"
+                required>
+
+
+        <button type="submit">
+            🔧 SAVE SERVICE RECORD
+        </button>
+
+    </form>
+
+    <a class="back"
+       th:href="@{/dashboard/{id}(id=${bikeId})}">
+        ← BACK TO RACE CONTROL
+    </a>
+
+</div>
+
+</body>
+</html>

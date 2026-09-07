@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+  <title>RIDEVAULT | My Bikes</title>
+
+  <style>
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        background:
+            radial-gradient(
+                circle at 80% 10%,
+                rgba(225, 6, 0, 0.12),
+                transparent 35%
+            );
+
+        background-color: #070707;
+
+        color: #ffffff;
+
+        font-family:
+            Arial,
+            Helvetica,
+            sans-serif;
+
+        min-height: 100vh;
+    }
+
+    /* ================= NAVBAR ================= */
+
+    .navbar {
+        height: 72px;
+
+        background:
+            linear-gradient(
+                90deg,
+                #0b0b0b,
+                #111111,
+                #090909
+            );
+
+        border-bottom: 1px solid #292929;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        padding: 0 38px;
+
+        position: relative;
+    }
+
+    .navbar::after {
+        content: "";
+
+        position: absolute;
+
+        bottom: -1px;
+        left: 0;
+
+        width: 35%;
+        height: 2px;
+
+        background: #e10600;
+    }
+
+    .logo {
+        font-size: 27px;
+
+        font-weight: 900;
+
+        letter-spacing: 4px;
+    }
+
+    .logo span {
+        color: #e10600;
+    }
+
+    .nav-links {
+        display: flex;
+
+        gap: 32px;
+    }
+
+    .nav-links a {
+        color: #777;
+
+        text-decoration: none;
+
+        font-size: 12px;
+
+        font-weight: bold;
+
+        letter-spacing: 1.5px;
+
+        transition: 0.2s;
+    }
+
+    .nav-links a:hover {
+        color: #ffffff;
+    }
+
+    /* ================= LAYOUT ================= */
+
+    .layout {
+        display: flex;
+
+        min-height:
+            calc(100vh - 72px);
+    }
+
+    /* ================= SIDEBAR ================= */
+
+    .sidebar {
+        width: 225px;
+
+        background: #0a0a0a;
+
+        border-right: 1px solid #222;
+
+        padding: 32px 18px;
+    }
+
+    .sidebar-title {
+        color: #555;
+
+        font-size: 10px;
+
+        font-weight: bold;
+
+        letter-spacing: 2.5px;
+
+        margin-bottom: 22px;
+
+        padding-left: 10px;
+    }
+
+    .menu {
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 7px;
+    }
+
+    .menu a {
+        text-decoration: none;
+
+        color: #888;
+
+        padding: 15px 14px;
+
+        border-left:
+            3px solid transparent;
+
+        font-size: 12px;
+
+        font-weight: bold;
+
+        letter-spacing: 1px;
+
+        transition: 0.2s;
+    }
+
+    .menu a:hover {
+        color: #ffffff;
+
+        background: #151515;
+
+        border-left-color: #e10600;
+    }
+
+    .menu .active {
+        color: #ffffff;
+
+        background:
+            linear-gradient(
+                90deg,
+                #e10600,
+                #a30000
+            );
+
+        border-left-color: #ffffff;
+
+        box-shadow:
+            0 5px 20px rgba(225, 6, 0, 0.2);
+    }
+
+    /* ================= CONTENT ================= */
+
+    .content {
+        flex: 1;
+
+        padding: 42px;
+
+        max-width: 1500px;
+    }
+
+    .page-header {
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        margin-bottom: 30px;
+    }
+
+    .page-title h1 {
+        font-size: 38px;
+
+        font-weight: 900;
+
+        letter-spacing: 3px;
+
+        font-style: italic;
+    }
+
+    .page-title h1::before {
+        content: "//";
+
+        color: #e10600;
+
+        margin-right: 10px;
+    }
+
+    .page-title p {
+        color: #666;
+
+        margin-top: 8px;
+
+        font-size: 13px;
+    }
+
+    /* ================= ADD BUTTON ================= */
+
+    .add-button {
+        background:
+            linear-gradient(
+                90deg,
+                #e10600,
+                #ad0000
+            );
+
+        color: white;
+
+        text-decoration: none;
+
+        padding: 14px 22px;
+
+        font-size: 11px;
+
+        font-weight: bold;
+
+        letter-spacing: 2px;
+
+        border: 1px solid #e10600;
+
+        transition: 0.2s;
+    }
+
+    .add-button:hover {
+        background: #ffffff;
+
+        color: #0a0a0a;
+
+        border-color: #ffffff;
+    }
+
+    /* ================= GARAGE INFO ================= */
+
+    .garage-header {
+        background:
+            linear-gradient(
+                125deg,
+                #171717,
+                #0c0c0c
+            );
+
+        border: 1px solid #292929;
+
+        border-left: 5px solid #e10600;
+
+        padding: 24px;
+
+        margin-bottom: 22px;
+
+        position: relative;
+
+        overflow: hidden;
+    }
+
+    .garage-header::after {
+        content: "GARAGE";
+
+        position: absolute;
+
+        right: 25px;
+
+        top: -5px;
+
+        font-size: 65px;
+
+        font-weight: 900;
+
+        font-style: italic;
+
+        color:
+            rgba(255, 255, 255, 0.025);
+    }
+
+    .garage-label {
+        color: #e10600;
+
+        font-size: 10px;
+
+        font-weight: bold;
+
+        letter-spacing: 3px;
+    }
+
+    .garage-count {
+        margin-top: 8px;
+
+        font-size: 25px;
+
+        font-weight: 900;
+    }
+
+    /* ================= BIKE GRID ================= */
+
+    .bike-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(3, 1fr);
+
+        gap: 18px;
+    }
+
+    /* ================= BIKE CARD ================= */
+
+    .bike-card {
+        background:
+            linear-gradient(
+                145deg,
+                #141414,
+                #0c0c0c
+            );
+
+        border:
+            1px solid #292929;
+
+        position: relative;
+
+        overflow: hidden;
+
+        transition: 0.25s;
+
+        min-height: 310px;
+    }
+
+    .bike-card:hover {
+        transform:
+            translateY(-5px);
+
+        border-color: #e10600;
+
+        box-shadow:
+            0 15px 40px
+            rgba(0, 0, 0, 0.5);
+    }
+
+    .bike-card::after {
+        content: "";
+
+        width: 130px;
+
+        height: 130px;
+
+        position: absolute;
+
+        right: -65px;
+
+        top: -65px;
+
+        border-radius: 50%;
+
+        border:
+            20px solid
+            rgba(225, 6, 0, 0.07);
+    }
+
+    .bike-top-line {
+        width: 65px;
+
+        height: 4px;
+
+        background: #e10600;
+    }
+
+    .bike-content {
+        padding: 25px;
+    }
+
+    .bike-id {
+        color: #555;
+
+        font-size: 10px;
+
+        letter-spacing: 2px;
+
+        font-weight: bold;
+    }
+
+    .bike-name {
+        font-size: 30px;
+
+        font-weight: 900;
+
+        text-transform: uppercase;
+
+        margin-top: 12px;
+
+        letter-spacing: 1.5px;
+    }
+
+    .bike-brand {
+        margin-top: 6px;
+
+        color: #e10600;
+
+        font-size: 11px;
+
+        font-weight: bold;
+
+        letter-spacing: 2px;
+    }
+
+    .bike-model {
+        color: #777;
+
+        font-size: 12px;
+
+        margin-top: 5px;
+
+        letter-spacing: 1px;
+    }
+
+    /* ================= TELEMETRY ================= */
+
+    .telemetry {
+        display: grid;
+
+        grid-template-columns:
+            1fr 1fr;
+
+        margin-top: 25px;
+
+        border-top:
+            1px solid #252525;
+
+        border-bottom:
+            1px solid #252525;
+    }
+
+    .telemetry-item {
+        padding: 15px 0;
+    }
+
+    .telemetry-item +
+    .telemetry-item {
+        padding-left: 20px;
+
+        border-left:
+            1px solid #252525;
+    }
+
+    .telemetry-label {
+        color: #555;
+
+        font-size: 9px;
+
+        font-weight: bold;
+
+        letter-spacing: 1.5px;
+    }
+
+    .telemetry-value {
+        font-size: 18px;
+
+        font-weight: 900;
+
+        margin-top: 6px;
+    }
+
+    .telemetry-unit {
+        color: #666;
+
+        font-size: 9px;
+
+        margin-left: 3px;
+    }
+
+    /* ================= BUTTONS ================= */
+
+    .bike-actions {
+        margin-top: 22px;
+    }
+
+    .view-button {
+        display: block;
+
+        width: 100%;
+
+        padding: 13px;
+
+        text-align: center;
+
+        background:
+            #e10600;
+
+        color: #ffffff;
+
+        text-decoration: none;
+
+        font-size: 10px;
+
+        font-weight: bold;
+
+        letter-spacing: 2px;
+
+        border:
+            1px solid #e10600;
+
+        transition: 0.2s;
+    }
+
+    .view-button:hover {
+        background: transparent;
+
+        color: #ffffff;
+    }
+
+    /* ================= DELETE BUTTON ================= */
+
+    .delete-button {
+        width: 100%;
+
+        margin-top: 10px;
+
+        padding: 11px;
+
+        background: transparent;
+
+        color: #e10600;
+
+        border: 1px solid #e10600;
+
+        font-size: 10px;
+
+        font-weight: bold;
+
+        letter-spacing: 2px;
+
+        cursor: pointer;
+
+        transition: 0.2s;
+    }
+
+    .delete-button:hover {
+        background: #e10600;
+
+        color: #ffffff;
+    }
+
+    /* ================= EMPTY GARAGE ================= */
+
+    .empty-garage {
+        grid-column: 1 / -1;
+
+        padding: 60px 30px;
+
+        text-align: center;
+
+        border:
+            1px dashed #333;
+
+        background:
+            #0d0d0d;
+    }
+
+    .empty-garage h2 {
+        font-size: 24px;
+
+        letter-spacing: 2px;
+    }
+
+    .empty-garage p {
+        color: #666;
+
+        margin-top: 10px;
+
+        font-size: 12px;
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media(max-width: 1150px) {
+
+        .bike-grid {
+            grid-template-columns:
+                repeat(2, 1fr);
+        }
+    }
+
+    @media(max-width: 850px) {
+
+        .sidebar {
+            display: none;
+        }
+
+        .nav-links {
+            display: none;
+        }
+
+        .content {
+            padding: 22px;
+        }
+    }
+
+    @media(max-width: 650px) {
+
+        .bike-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .page-header {
+            align-items: flex-start;
+
+            gap: 20px;
+
+            flex-direction: column;
+        }
+
+        .page-title h1 {
+            font-size: 29px;
+        }
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar">
+
+  <div class="logo">
+    RIDE<span>VAULT</span>
+  </div>
+
+  <div class="nav-links">
+
+    <a href="/bikes">
+      GARAGE
+    </a>
+
+    <a href="#">
+      SERVICE
+    </a>
+
+    <a href="#">
+      FUEL
+    </a>
+
+    <a href="#">
+      PROFILE
+    </a>
+
+  </div>
+
+</nav>
+
+
+<div class="layout">
+
+
+  <!-- ================= SIDEBAR ================= -->
+
+  <aside class="sidebar">
+
+    <div class="sidebar-title">
+      CONTROL CENTER
+    </div>
+
+    <div class="menu">
+
+      <a href="/bikes">
+        DASHBOARD
+      </a>
+
+      <a href="/bikes"
+         class="active">
+
+        MY BIKES
+
+      </a>
+
+      <a href="#">
+        SERVICE
+      </a>
+
+      <a href="#">
+        FUEL LOG
+      </a>
+
+      <a href="#">
+        BIKE HEALTH
+      </a>
+
+    </div>
+
+  </aside>
+
+
+  <!-- ================= CONTENT ================= -->
+
+  <main class="content">
+
+
+    <div class="page-header">
+
+
+      <div class="page-title">
+
+        <h1>
+          RIDER'S GARAGE
+        </h1>
+
+        <p>
+          Manage your machines and enter race control.
+        </p>
+
+      </div>
+
+
+      <!-- ADD BIKE -->
+
+      <a th:href="@{/bikes/add}"
+         class="add-button">
+
+        + ADD MACHINE
+
+      </a>
+
+
+    </div>
+
+
+    <!-- ================= GARAGE SUMMARY ================= -->
+
+    <section class="garage-header">
+
+      <div class="garage-label">
+        GARAGE STATUS
+      </div>
+
+      <div class="garage-count">
+
+        <span th:text="${bikes.size()}">
+          0
+        </span>
+
+        MACHINE(S) REGISTERED
+
+      </div>
+
+    </section>
+
+
+    <!-- ================= BIKES ================= -->
+
+    <section class="bike-grid">
+
+
+      <!-- ONE CARD IS CREATED FOR EVERY BIKE -->
+
+      <div class="bike-card"
+           th:each="bike : ${bikes}">
+
+
+        <div class="bike-top-line">
+        </div>
+
+
+        <div class="bike-content">
+
+
+          <div class="bike-id">
+
+            MACHINE ID //
+
+            <span th:text="${bike.id}">
+              1
+            </span>
+
+          </div>
+
+
+          <div class="bike-name"
+               th:text="${bike.name}">
+
+            SHADOW
+
+          </div>
+
+
+          <div class="bike-brand"
+               th:text="${bike.brand}">
+
+            YAMAHA
+
+          </div>
+
+
+          <div class="bike-model"
+               th:text="${bike.model}">
+
+            MT-15
+
+          </div>
+
+
+          <!-- TELEMETRY -->
+
+          <div class="telemetry">
+
+
+            <div class="telemetry-item">
+
+              <div class="telemetry-label">
+                MODEL YEAR
+              </div>
+
+              <div class="telemetry-value"
+                   th:text="${bike.year}">
+
+                2025
+
+              </div>
+
+            </div>
+
+
+            <div class="telemetry-item">
+
+              <div class="telemetry-label">
+                ODOMETER
+              </div>
+
+              <div class="telemetry-value">
+
+                <span th:text="${bike.currentKm}">
+                  8500
+                </span>
+
+                <span class="telemetry-unit">
+                  KM
+                </span>
+
+              </div>
+
+            </div>
+
+
+          </div>
+
+
+          <!-- ================= ACTION BUTTONS ================= -->
+
+          <div class="bike-actions">
+
+
+            <!-- DASHBOARD -->
+
+            <a class="view-button"
+               th:href="@{/dashboard/{id}(id=${bike.id})}">
+
+              ENTER RACE CONTROL →
+
+            </a>
+
+
+            <!-- DELETE BIKE -->
+
+            <button type="button"
+                    class="delete-button"
+                    th:attr="data-id=${bike.id}"
+                    onclick="deleteBike(this)">
+
+              DELETE BIKE
+
+            </button>
+
+
+          </div>
+
+
+        </div>
+
+      </div>
+
+
+      <!-- EMPTY DATABASE -->
+
+      <div class="empty-garage"
+           th:if="${bikes.isEmpty()}">
+
+        <h2>
+          NO MACHINES IN GARAGE
+        </h2>
+
+        <p>
+          Register your first motorcycle to begin.
+        </p>
+
+      </div>
+
+
+    </section>
+
+
+  </main>
+
+
+</div>
+
+
+<!-- ================= DELETE BIKE SCRIPT ================= -->
+
+<script>
+
+  function deleteBike(button) {
+
+      const bikeId = button.getAttribute("data-id");
+
+      const confirmed = confirm(
+          "WARNING!\n\n" +
+          "Deleting this bike will also delete:\n" +
+          "• All fuel records\n" +
+          "• All service records\n\n" +
+          "This action cannot be undone.\n\n" +
+          "Are you sure you want to delete this bike?"
+      );
+
+      if (!confirmed) {
+          return;
+      }
+
+
+      fetch("/api/bikes/" + bikeId, {
+          method: "DELETE"
+      })
+
+
+      .then(response => {
+
+          if (response.ok) {
+
+              alert("Bike deleted successfully.");
+
+              window.location.reload();
+
+          } else {
+
+              alert("Failed to delete bike.");
+
+          }
+
+      })
+
+
+      .catch(error => {
+
+          console.error(error);
+
+          alert(
+              "Something went wrong while deleting the bike."
+          );
+
+      });
+
+  }
+
+</script>
+
+
+</body>
+
+</html>

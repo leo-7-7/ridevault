@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+  <title>Fuel History | RideVault</title>
+
+  <style>
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        background:
+            radial-gradient(
+                circle at 80% 10%,
+                rgba(225, 6, 0, 0.12),
+                transparent 35%
+            ),
+            #070707;
+
+        color: #ffffff;
+
+        font-family:
+            Arial,
+            Helvetica,
+            sans-serif;
+
+        min-height: 100vh;
+    }
+
+    /* ================= NAVBAR ================= */
+
+    .navbar {
+        height: 72px;
+
+        background:
+            linear-gradient(
+                90deg,
+                #0b0b0b,
+                #111111,
+                #090909
+            );
+
+        border-bottom: 1px solid #292929;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        padding: 0 38px;
+
+        position: relative;
+    }
+
+    .navbar::after {
+        content: "";
+
+        position: absolute;
+
+        bottom: -1px;
+        left: 0;
+
+        width: 35%;
+        height: 2px;
+
+        background: #e10600;
+    }
+
+    .logo {
+        font-size: 27px;
+        font-weight: 900;
+        letter-spacing: 4px;
+    }
+
+    .logo span {
+        color: #e10600;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 32px;
+    }
+
+    .nav-links a {
+        color: #777;
+
+        text-decoration: none;
+
+        font-size: 12px;
+        font-weight: bold;
+
+        letter-spacing: 1.5px;
+
+        transition: 0.2s;
+    }
+
+    .nav-links a:hover {
+        color: #ffffff;
+    }
+
+    /* ================= LAYOUT ================= */
+
+    .layout {
+        display: flex;
+
+        min-height:
+            calc(100vh - 72px);
+    }
+
+    /* ================= SIDEBAR ================= */
+
+    .sidebar {
+        width: 225px;
+
+        background: #0a0a0a;
+
+        border-right: 1px solid #222;
+
+        padding: 32px 18px;
+    }
+
+    .sidebar-title {
+        color: #555;
+
+        font-size: 10px;
+        font-weight: bold;
+
+        letter-spacing: 2.5px;
+
+        margin-bottom: 22px;
+
+        padding-left: 10px;
+    }
+
+    .menu {
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 7px;
+    }
+
+    .menu a {
+        text-decoration: none;
+
+        color: #888;
+
+        padding: 15px 14px;
+
+        border-left:
+            3px solid transparent;
+
+        font-size: 12px;
+        font-weight: bold;
+
+        letter-spacing: 1px;
+
+        transition: 0.2s;
+    }
+
+    .menu a:hover {
+        color: #ffffff;
+
+        background: #151515;
+
+        border-left-color:
+            #e10600;
+    }
+
+    .menu .active {
+        color: #ffffff;
+
+        background:
+            linear-gradient(
+                90deg,
+                #e10600,
+                #a30000
+            );
+
+        border-left-color:
+            #ffffff;
+
+        box-shadow:
+            0 5px 20px
+            rgba(225, 6, 0, 0.2);
+    }
+
+    /* ================= CONTENT ================= */
+
+    .content {
+        flex: 1;
+
+        padding: 42px;
+
+        max-width: 1500px;
+    }
+
+    .page-title {
+        margin-bottom: 30px;
+    }
+
+    .page-title h1 {
+        font-size: 38px;
+
+        font-weight: 900;
+
+        letter-spacing: 3px;
+
+        font-style: italic;
+    }
+
+    .page-title h1::before {
+        content: "//";
+
+        color: #e10600;
+
+        margin-right: 10px;
+    }
+
+    .page-title p {
+        color: #666;
+
+        margin-top: 8px;
+
+        font-size: 13px;
+    }
+
+    /* ================= BIKE HEADER ================= */
+
+    .bike-header {
+        background:
+            linear-gradient(
+                125deg,
+                #181818,
+                #0c0c0c 55%,
+                #111111
+            );
+
+        border: 1px solid #303030;
+
+        border-left:
+            5px solid #e10600;
+
+        padding: 25px;
+
+        margin-bottom: 20px;
+    }
+
+    .bike-label {
+        color: #e10600;
+
+        font-size: 10px;
+
+        font-weight: bold;
+
+        letter-spacing: 3px;
+    }
+
+    .bike-name {
+        margin-top: 8px;
+
+        font-size: 30px;
+
+        font-weight: 900;
+
+        letter-spacing: 2px;
+
+        text-transform: uppercase;
+    }
+
+    .bike-details {
+        margin-top: 7px;
+
+        color: #777;
+
+        font-size: 14px;
+    }
+
+    .bike-details strong {
+        color: #ffffff;
+    }
+
+    /* ================= PANEL ================= */
+
+    .panel {
+        background:
+            linear-gradient(
+                145deg,
+                #121212,
+                #0d0d0d
+            );
+
+        border: 1px solid #252525;
+
+        padding: 27px;
+
+        border-radius: 4px;
+    }
+
+    .panel-header {
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        margin-bottom: 25px;
+    }
+
+    .panel-header h2 {
+        font-size: 15px;
+
+        letter-spacing: 2px;
+
+        font-style: italic;
+    }
+
+    .panel-header h2::before {
+        content: "";
+
+        display: inline-block;
+
+        width: 4px;
+        height: 15px;
+
+        background: #e10600;
+
+        margin-right: 10px;
+
+        vertical-align: -2px;
+    }
+
+    /* ================= BUTTON ================= */
+
+    .action-button {
+        display: inline-block;
+
+        padding: 12px 18px;
+
+        text-align: center;
+
+        text-decoration: none;
+
+        background: #e10600;
+
+        color: #ffffff;
+
+        border: 1px solid #e10600;
+
+        font-size: 11px;
+
+        font-weight: bold;
+
+        letter-spacing: 1.5px;
+
+        transition: 0.2s;
+    }
+
+    .action-button:hover {
+        background: #ff120b;
+
+        border-color: #ff120b;
+
+        transform:
+            translateY(-2px);
+    }
+
+    /* ================= TABLE ================= */
+
+    .table-wrapper {
+        width: 100%;
+
+        overflow-x: auto;
+    }
+
+    .fuel-table {
+        width: 100%;
+
+        border-collapse: collapse;
+
+        min-width: 650px;
+    }
+
+    .fuel-table th {
+        text-align: left;
+
+        padding: 15px;
+
+        background: #090909;
+
+        border-bottom:
+            1px solid #333;
+
+        color: #666;
+
+        font-size: 10px;
+
+        letter-spacing: 2px;
+    }
+
+    .fuel-table td {
+        padding: 17px 15px;
+
+        border-bottom:
+            1px solid #202020;
+
+        font-size: 13px;
+
+        color: #aaa;
+    }
+
+    .fuel-table tbody tr {
+        transition: 0.2s;
+    }
+
+    .fuel-table tbody tr:hover {
+        background: #151515;
+    }
+
+    .fuel-date {
+        color: #ffffff !important;
+
+        font-weight: bold;
+    }
+
+    .fuel-amount {
+        color: #ffffff !important;
+
+        font-weight: bold;
+    }
+
+    .fuel-cost {
+        color: #e10600 !important;
+
+        font-weight: bold;
+
+        font-size: 14px !important;
+    }
+
+    .fuel-odometer {
+        color: #ffffff !important;
+
+        font-weight: bold;
+    }
+
+    /* ================= EMPTY ================= */
+
+    .empty-state {
+        text-align: center;
+
+        padding: 70px 20px;
+
+        color: #555;
+
+        letter-spacing: 2px;
+
+        font-size: 12px;
+    }
+
+    .empty-state span {
+        display: block;
+
+        margin-top: 12px;
+
+        color: #777;
+
+        letter-spacing: 0;
+
+        font-size: 13px;
+    }
+
+    /* ================= BACK ================= */
+
+    .back-link {
+        display: inline-block;
+
+        margin-top: 20px;
+
+        color: #777;
+
+        text-decoration: none;
+
+        font-size: 11px;
+
+        font-weight: bold;
+
+        letter-spacing: 1.5px;
+    }
+
+    .back-link:hover {
+        color: #ffffff;
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media (max-width: 850px) {
+
+        .sidebar {
+            display: none;
+        }
+
+        .nav-links {
+            display: none;
+        }
+
+        .content {
+            padding: 22px;
+        }
+    }
+
+    @media (max-width: 550px) {
+
+        .navbar {
+            padding: 0 20px;
+        }
+
+        .content {
+            padding: 18px;
+        }
+
+        .page-title h1 {
+            font-size: 28px;
+        }
+
+        .bike-name {
+            font-size: 24px;
+        }
+
+        .panel-header {
+            flex-direction: column;
+
+            align-items: flex-start;
+
+            gap: 15px;
+        }
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar">
+
+  <div class="logo">
+    RIDE<span>VAULT</span>
+  </div>
+
+  <div class="nav-links">
+
+    <a th:href="@{/bikes}">
+      GARAGE
+    </a>
+
+    <a th:href="@{/services/add/{id}(id=${bike.id})}">
+      SERVICE
+    </a>
+
+    <a th:href="@{/dashboard/{id}(id=${bike.id})}">
+      RACE CONTROL
+    </a>
+
+  </div>
+
+</nav>
+
+
+<!-- ================= MAIN ================= -->
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+
+  <aside class="sidebar">
+
+    <div class="sidebar-title">
+      CONTROL CENTER
+    </div>
+
+    <div class="menu">
+
+      <a th:href="@{/dashboard/{id}(id=${bike.id})}">
+        DASHBOARD
+      </a>
+
+      <a th:href="@{/bikes}">
+        MY BIKES
+      </a>
+
+      <a th:href="@{/services/add/{id}(id=${bike.id})}">
+        SERVICE
+      </a>
+
+      <a th:href="@{/fuel/history/{id}(id=${bike.id})}"
+         class="active">
+        FUEL LOG
+      </a>
+
+      <a th:href="@{/dashboard/{id}(id=${bike.id})#bike-health}">
+        BIKE HEALTH
+      </a>
+
+    </div>
+
+  </aside>
+
+
+  <!-- CONTENT -->
+
+  <main class="content">
+
+    <div class="page-title">
+
+      <h1>FUEL LOG</h1>
+
+      <p>
+        Complete fuel history for your machine
+      </p>
+
+    </div>
+
+
+    <!-- BIKE HEADER -->
+
+    <section class="bike-header">
+
+      <div class="bike-label">
+        CURRENT MACHINE
+      </div>
+
+      <div class="bike-name"
+           th:text="${bike.name}">
+        PEARL WHITE
+      </div>
+
+      <div class="bike-details">
+
+        <strong th:text="${bike.brand}">
+          Triumph
+        </strong>
+
+        <span> • </span>
+
+        <span th:text="${bike.model}">
+                    Scrambler400x
+                </span>
+
+      </div>
+
+    </section>
+
+
+    <!-- FUEL HISTORY -->
+
+    <section class="panel">
+
+      <div class="panel-header">
+
+        <h2>
+          FUEL HISTORY
+        </h2>
+
+        <a class="action-button"
+           th:href="@{/fuel/add/{id}(id=${bike.id})}">
+          + ADD FUEL
+        </a>
+
+      </div>
+
+
+      <!-- TABLE -->
+
+      <div class="table-wrapper"
+           th:if="${!fuelRecords.isEmpty()}">
+
+        <table class="fuel-table">
+
+          <thead>
+
+          <tr>
+
+            <th>
+              DATE
+            </th>
+
+            <th>
+              ODOMETER
+            </th>
+
+            <th>
+              FUEL
+            </th>
+
+            <th>
+              COST
+            </th>
+
+            <th>
+              COST / LITRE
+            </th>
+
+          </tr>
+
+          </thead>
+
+
+          <tbody>
+
+          <tr th:each="fuel : ${fuelRecords}">
+
+            <td class="fuel-date"
+                th:text="${fuel.fuelDate}">
+              2026-09-01
+            </td>
+
+            <td class="fuel-odometer">
+
+                            <span th:text="${fuel.odometer}">
+                                20000
+                            </span>
+
+              KM
+
+            </td>
+
+            <td>
+
+                            <span th:text="${fuel.liters}">
+                                10
+                            </span>
+
+              L
+
+            </td>
+
+            <td class="fuel-cost">
+
+              ₹<span th:text="${fuel.cost}">
+                                1000
+                            </span>
+
+            </td>
+
+            <td class="fuel-amount">
+
+              ₹<span
+                    th:text="${fuel.liters > 0 ? fuel.cost / fuel.liters : 0}">
+                                100
+                            </span>
+
+            </td>
+
+          </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+
+      <!-- EMPTY -->
+
+      <div class="empty-state"
+           th:if="${fuelRecords.isEmpty()}">
+
+        NO FUEL HISTORY AVAILABLE
+
+        <span>
+                    Add your first fuel record to start tracking fuel usage.
+                </span>
+
+      </div>
+
+    </section>
+
+
+    <a class="back-link"
+       th:href="@{/dashboard/{id}(id=${bike.id})}">
+
+      ← BACK TO RACE CONTROL
+
+    </a>
+
+  </main>
+
+</div>
+
+</body>
+
+</html>

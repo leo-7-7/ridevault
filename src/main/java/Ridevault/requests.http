@@ -1,0 +1,12 @@
+### Add motorcycle
+
+POST http://localhost:8080/api/bikes
+Content-Type: application/json
+
+{
+  "name": "Shadow",
+  "brand": "Yamaha",
+  "model": "MT-15",
+  "year": 2025,
+  "currentKm": 8500
+}

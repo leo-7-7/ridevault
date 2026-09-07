@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>RIDEVAULT | Race Control</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background:
+                radial-gradient(
+                    circle at 80% 10%,
+                    rgba(225, 6, 0, 0.12),
+                    transparent 35%
+                ),
+                #070707;
+
+            color: #ffffff;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            min-height: 100vh;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        .navbar {
+            height: 72px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #0b0b0b,
+                    #111111,
+                    #090909
+                );
+
+            border-bottom: 1px solid #292929;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 38px;
+
+            position: relative;
+        }
+
+        .navbar::after {
+            content: "";
+
+            position: absolute;
+
+            bottom: -1px;
+
+            left: 0;
+
+            width: 35%;
+
+            height: 2px;
+
+            background: #e10600;
+        }
+
+        .logo {
+            font-size: 27px;
+
+            font-weight: 900;
+
+            letter-spacing: 4px;
+        }
+
+        .logo span {
+            color: #e10600;
+        }
+
+        .nav-links {
+            display: flex;
+
+            gap: 32px;
+        }
+
+        .nav-links a {
+            color: #777;
+
+            text-decoration: none;
+
+            font-size: 12px;
+
+            font-weight: bold;
+
+            letter-spacing: 1.5px;
+
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #ffffff;
+        }
+
+        /* ================= MAIN ================= */
+
+        .layout {
+            display: flex;
+
+            min-height:
+                calc(100vh - 72px);
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            width: 225px;
+
+            background: #0a0a0a;
+
+            border-right: 1px solid #222;
+
+            padding: 32px 18px;
+        }
+
+        .sidebar-title {
+            color: #555;
+
+            font-size: 10px;
+
+            font-weight: bold;
+
+            letter-spacing: 2.5px;
+
+            margin-bottom: 22px;
+
+            padding-left: 10px;
+        }
+
+        .menu {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 7px;
+        }
+
+        .menu a {
+            text-decoration: none;
+
+            color: #888;
+
+            padding: 15px 14px;
+
+            border-left:
+                3px solid transparent;
+
+            font-size: 12px;
+
+            font-weight: bold;
+
+            letter-spacing: 1px;
+
+            transition: 0.2s;
+        }
+
+        .menu a:hover {
+            color: #ffffff;
+
+            background: #151515;
+
+            border-left-color:
+                #e10600;
+        }
+
+        .menu .active {
+            color: #ffffff;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #e10600,
+                    #a30000
+                );
+
+            border-left-color:
+                #ffffff;
+
+            box-shadow:
+                0 5px 20px
+                rgba(225, 6, 0, 0.2);
+        }
+
+        /* ================= CONTENT ================= */
+
+        .content {
+            flex: 1;
+
+            padding: 42px;
+
+            max-width: 1500px;
+        }
+
+        .page-title {
+            margin-bottom: 28px;
+        }
+
+        .page-title h1 {
+            font-size: 38px;
+
+            font-weight: 900;
+
+            letter-spacing: 3px;
+
+            font-style: italic;
+        }
+
+        .page-title h1::before {
+            content: "//";
+
+            color: #e10600;
+
+            margin-right: 10px;
+        }
+
+        .page-title p {
+            color: #666;
+
+            margin-top: 8px;
+
+            font-size: 13px;
+        }
+
+        /* ================= BIKE ================= */
+
+        .bike-card {
+            position: relative;
+
+            overflow: hidden;
+
+            background:
+                linear-gradient(
+                    125deg,
+                    #181818,
+                    #0c0c0c 55%,
+                    #111111
+                );
+
+            border: 1px solid #303030;
+
+            border-left:
+                5px solid #e10600;
+
+            padding: 32px;
+
+            border-radius: 4px;
+
+            margin-bottom: 22px;
+
+            box-shadow:
+                0 10px 35px
+                rgba(0, 0, 0, 0.35);
+        }
+
+        .bike-card::before {
+            content: "RACE";
+
+            position: absolute;
+
+            right: 30px;
+
+            top: 20px;
+
+            font-size: 75px;
+
+            font-weight: 900;
+
+            font-style: italic;
+
+            color:
+                rgba(255, 255, 255, 0.025);
+
+            letter-spacing: 5px;
+        }
+
+        .bike-card::after {
+            content: "";
+
+            position: absolute;
+
+            width: 180px;
+
+            height: 180px;
+
+            right: -60px;
+
+            bottom: -100px;
+
+            border-radius: 50%;
+
+            border:
+                25px solid
+                rgba(225, 6, 0, 0.08);
+        }
+
+        .bike-label {
+            color: #e10600;
+
+            font-size: 11px;
+
+            font-weight: bold;
+
+            letter-spacing: 3px;
+
+            margin-bottom: 7px;
+        }
+
+        .bike-name {
+            font-size: 44px;
+
+            font-weight: 900;
+
+            letter-spacing: 2px;
+
+            text-transform: uppercase;
+        }
+
+        .bike-brand {
+            color: #777;
+
+            margin-top: 8px;
+
+            font-size: 14px;
+
+            letter-spacing: 1px;
+        }
+
+        .bike-brand span:first-child {
+            color: #ffffff;
+
+            font-weight: bold;
+        }
+
+        /* ================= STATS ================= */
+
+        .stats {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 14px;
+
+            margin-bottom: 22px;
+        }
+
+        .stat-card {
+            position: relative;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #131313,
+                    #0d0d0d
+                );
+
+            border: 1px solid #252525;
+
+            padding: 23px;
+
+            border-radius: 4px;
+
+            overflow: hidden;
+
+            transition: 0.2s;
+        }
+
+        .stat-card:hover {
+            transform:
+                translateY(-3px);
+
+            border-color: #3b3b3b;
+
+            box-shadow:
+                0 8px 25px
+                rgba(0, 0, 0, 0.35);
+        }
+
+        .stat-card::after {
+            content: "";
+
+            position: absolute;
+
+            bottom: 0;
+
+            left: 0;
+
+            width: 35px;
+
+            height: 3px;
+
+            background: #e10600;
+        }
+
+        .stat-title {
+            color: #666;
+
+            font-size: 10px;
+
+            font-weight: bold;
+
+            letter-spacing: 2px;
+        }
+
+        .stat-value {
+            font-size: 29px;
+
+            font-weight: 900;
+
+            margin-top: 10px;
+
+            letter-spacing: 1px;
+        }
+
+        .stat-unit {
+            color: #555;
+
+            font-size: 10px;
+
+            margin-top: 4px;
+
+            letter-spacing: 1px;
+        }
+
+        /* ================= GRID ================= */
+
+        .dashboard-grid {
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 20px;
+        }
+
+        .panel {
+            background:
+                linear-gradient(
+                    145deg,
+                    #121212,
+                    #0d0d0d
+                );
+
+            border: 1px solid #252525;
+
+            padding: 27px;
+
+            border-radius: 4px;
+        }
+
+        .panel h2 {
+            font-size: 14px;
+
+            letter-spacing: 2px;
+
+            margin-bottom: 25px;
+
+            font-style: italic;
+        }
+
+        .panel h2::before {
+            content: "";
+
+            display: inline-block;
+
+            width: 4px;
+
+            height: 15px;
+
+            background: #e10600;
+
+            margin-right: 10px;
+
+            vertical-align: -2px;
+        }
+
+        /* ================= HEALTH ================= */
+
+        .health-number {
+            font-size: 55px;
+
+            font-weight: 900;
+
+            font-style: italic;
+
+            line-height: 1;
+        }
+
+        .health-number span {
+            color: #e10600;
+
+            font-size: 27px;
+        }
+
+        .health-bar {
+            height: 9px;
+
+            background: #252525;
+
+            margin-top: 22px;
+
+            border-radius: 2px;
+
+            overflow: hidden;
+        }
+
+        .health-progress {
+            height: 100%;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #780000,
+                    #e10600
+                );
+
+            transition:
+                width 1s ease;
+        }
+
+        .health-text {
+            color: #777;
+
+            font-size: 11px;
+
+            margin-top: 13px;
+
+            letter-spacing: 0.8px;
+        }
+
+        /* ================= SERVICE ================= */
+
+        .service-item {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            padding: 15px 0;
+
+            border-bottom:
+                1px solid #202020;
+
+            font-size: 12px;
+
+            font-weight: bold;
+
+            letter-spacing: 1px;
+        }
+
+        .service-item:last-child {
+            border-bottom: none;
+        }
+
+        .good {
+            color: #ffffff;
+        }
+
+        .warning {
+            color: #e10600;
+        }
+
+        /* ================= COST ================= */
+
+        .cost-box {
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 15px;
+
+            margin-top: 5px;
+        }
+
+        .cost-item {
+            background: #0a0a0a;
+
+            border: 1px solid #202020;
+
+            padding: 18px;
+        }
+
+        .cost-label {
+            color: #666;
+
+            font-size: 10px;
+
+            letter-spacing: 1.5px;
+
+            font-weight: bold;
+        }
+
+        .cost-value {
+            font-size: 23px;
+
+            font-weight: 900;
+
+            margin-top: 8px;
+        }
+
+        /* ================= ACTION BUTTONS ================= */
+
+        .action-buttons {
+            display: flex;
+
+            gap: 12px;
+
+            margin-top: 20px;
+        }
+
+        .action-button {
+            display: inline-block;
+
+            flex: 1;
+
+            padding: 14px 16px;
+
+            text-align: center;
+
+            text-decoration: none;
+
+            background: #e10600;
+
+            color: #ffffff;
+
+            border: 1px solid #e10600;
+
+            font-size: 11px;
+
+            font-weight: bold;
+
+            letter-spacing: 1.5px;
+
+            transition: 0.2s;
+        }
+
+        .action-button:hover {
+            background: #ff120b;
+
+            border-color: #ff120b;
+
+            transform:
+                translateY(-2px);
+        }
+
+        .action-button.secondary {
+            background: #151515;
+
+            border-color: #333;
+
+            color: #ffffff;
+        }
+
+        .action-button.secondary:hover {
+            background: #222;
+
+            border-color: #555;
+        }
+
+        /* ================= SERVICE HISTORY ================= */
+
+        .history-panel {
+            margin-top: 20px;
+        }
+
+        .history-header {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 15px;
+
+            margin-bottom: 20px;
+        }
+
+        .history-header h2 {
+            margin-bottom: 0;
+        }
+
+        .history-table-wrapper {
+            overflow-x: auto;
+        }
+
+        .history-table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 650px;
+        }
+
+        .history-table th {
+            text-align: left;
+
+            color: #666;
+
+            font-size: 10px;
+
+            letter-spacing: 1.5px;
+
+            padding: 13px 12px;
+
+            border-bottom:
+                1px solid #333;
+
+            background: #0a0a0a;
+        }
+
+        .history-table td {
+            padding: 15px 12px;
+
+            font-size: 12px;
+
+            border-bottom:
+                1px solid #202020;
+
+            color: #ddd;
+        }
+
+        .history-table tbody tr:hover {
+            background: #151515;
+        }
+
+        .history-type {
+            color: #ffffff;
+
+            font-weight: bold;
+
+            letter-spacing: 0.5px;
+        }
+
+        .history-cost {
+            color: #e10600;
+
+            font-weight: bold;
+        }
+
+        .empty-history {
+            padding: 30px;
+
+            text-align: center;
+
+            background: #0a0a0a;
+
+            border: 1px dashed #333;
+
+            color: #666;
+
+            font-size: 12px;
+
+            letter-spacing: 1px;
+        }
+
+        /* ================= RACE STATUS ================= */
+
+        .race-status {
+            margin-top: 20px;
+
+            padding: 15px;
+
+            border: 1px solid #242424;
+
+            background: #0a0a0a;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+        }
+
+        .race-status-label {
+            color: #666;
+
+            font-size: 10px;
+
+            letter-spacing: 2px;
+
+            font-weight: bold;
+        }
+
+        .ready {
+            color: #ffffff;
+
+            font-size: 11px;
+
+            font-weight: bold;
+
+            letter-spacing: 1px;
+        }
+
+        .ready::before {
+            content: "●";
+
+            color: #e10600;
+
+            margin-right: 7px;
+
+            font-size: 9px;
+        }
+
+        /* ================= BIKE HEALTH ANCHOR ================= */
+
+        #bike-health {
+            scroll-margin-top: 90px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 1100px) {
+
+            .content {
+                padding: 30px;
+            }
+
+            .stats {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 850px) {
+
+            .sidebar {
+                display: none;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .content {
+                padding: 22px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .bike-name {
+                font-size: 34px;
+            }
+        }
+
+        @media (max-width: 550px) {
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                padding: 0 20px;
+            }
+
+            .content {
+                padding: 18px;
+            }
+
+            .page-title h1 {
+                font-size: 28px;
+            }
+
+            .bike-name {
+                font-size: 30px;
+            }
+
+            .cost-box {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .history-header {
+                align-items: flex-start;
+
+                flex-direction: column;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+     ===================================================== -->
+
+<nav class="navbar">
+
+    <div class="logo">
+        RIDE<span>VAULT</span>
+    </div>
+
+    <div class="nav-links">
+
+        <a th:href="@{/bikes}">
+            GARAGE
+        </a>
+
+        <a th:href="@{/services/add/{id}(id=${dashboard.bike.id})}">
+            SERVICE
+        </a>
+
+        <a th:href="@{/fuel/history/{id}(id=${dashboard.bike.id})}">
+            FUEL
+        </a>
+
+        <a href="#">
+            PROFILE
+        </a>
+
+    </div>
+
+</nav>
+
+
+<!-- =====================================================
+     MAIN LAYOUT
+     ===================================================== -->
+
+<div class="layout">
+
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-title">
+            CONTROL CENTER
+        </div>
+
+        <div class="menu">
+
+            <a href="#" class="active">
+                DASHBOARD
+            </a>
+
+            <a th:href="@{/bikes}">
+                MY BIKES
+            </a>
+
+            <a th:href="@{/services/add/{id}(id=${dashboard.bike.id})}">
+                SERVICE
+            </a>
+
+            <!-- FUEL LOG NOW OPENS FUEL HISTORY -->
+
+            <a th:href="@{/fuel/history/{id}(id=${dashboard.bike.id})}">
+                FUEL LOG
+            </a>
+
+            <!-- BIKE HEALTH NOW SCROLLS TO HEALTH PANEL -->
+
+            <a href="#bike-health">
+                BIKE HEALTH
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- CONTENT -->
+
+    <main class="content">
+
+
+        <!-- PAGE TITLE -->
+
+        <div class="page-title">
+
+            <h1>RACE CONTROL</h1>
+
+            <p>
+                Motorcycle performance command center
+            </p>
+
+        </div>
+
+
+        <!-- =================================================
+             BIKE
+             ================================================= -->
+
+        <section class="bike-card">
+
+            <div class="bike-label">
+                CURRENT MACHINE
+            </div>
+
+            <div class="bike-name"
+                 th:text="${dashboard.bike.name}">
+
+                SHADOW
+
+            </div>
+
+            <div class="bike-brand">
+
+                <span th:text="${dashboard.bike.brand}">
+                    YAMAHA
+                </span>
+
+                <span> • </span>
+
+                <span th:text="${dashboard.bike.model}">
+                    MT-15
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             STAT CARDS
+             ================================================= -->
+
+        <section class="stats">
+
+
+            <!-- ODOMETER -->
+
+            <div class="stat-card">
+
+                <div class="stat-title">
+                    ODOMETER
+                </div>
+
+                <div class="stat-value"
+                     th:text="${dashboard.bike.currentKm}">
+
+                    8500
+
+                </div>
+
+                <div class="stat-unit">
+                    KM
+                </div>
+
+            </div>
+
+
+            <!-- MODEL YEAR -->
+
+            <div class="stat-card">
+
+                <div class="stat-title">
+                    MODEL YEAR
+                </div>
+
+                <div class="stat-value"
+                     th:text="${dashboard.bike.year}">
+
+                    2025
+
+                </div>
+
+                <div class="stat-unit">
+                    MACHINE YEAR
+                </div>
+
+            </div>
+
+
+            <!-- SERVICES -->
+
+            <div class="stat-card">
+
+                <div class="stat-title">
+                    SERVICES
+                </div>
+
+                <div class="stat-value"
+                     th:text="${dashboard.totalServices}">
+
+                    0
+
+                </div>
+
+                <div class="stat-unit">
+                    RECORDS
+                </div>
+
+            </div>
+
+
+            <!-- FUEL -->
+
+            <div class="stat-card">
+
+                <div class="stat-title">
+                    FUEL LOG
+                </div>
+
+                <div class="stat-value"
+                     th:text="${dashboard.totalFuelRecords}">
+
+                    0
+
+                </div>
+
+                <div class="stat-unit">
+                    RECORDS
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             HEALTH + SERVICE
+             ================================================= -->
+
+        <section class="dashboard-grid"
+                 id="bike-health">
+
+
+            <!-- BIKE HEALTH -->
+
+            <div class="panel">
+
+                <h2>
+                    BIKE HEALTH
+                </h2>
+
+                <div class="health-number">
+
+                    <span th:text="${dashboard.healthScore}">
+                        0
+                    </span>
+
+                    <span>%</span>
+
+                </div>
+
+
+                <div class="health-bar">
+
+                    <div class="health-progress"
+                         th:style="'width:' + ${dashboard.healthScore} + '%'">
+                    </div>
+
+                </div>
+
+
+                <div class="health-text">
+
+                    MACHINE CONDITION:
+
+                    <strong
+                            th:text="${dashboard.healthStatus}">
+                        UNKNOWN
+                    </strong>
+
+                </div>
+
+
+                <!-- RACE STATUS -->
+
+                <div class="race-status">
+
+                    <span class="race-status-label">
+                        RACE STATUS
+                    </span>
+
+
+                    <span class="ready"
+                          th:if="${!dashboard.serviceDue}">
+
+                        READY TO RIDE
+
+                    </span>
+
+
+                    <span class="warning"
+                          th:if="${dashboard.serviceDue}">
+
+                        SERVICE REQUIRED
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- SERVICE STATUS -->
+
+            <div class="panel">
+
+                <h2>
+                    SERVICE STATUS
+                </h2>
+
+
+                <div class="service-item">
+
+                    <span>
+                        SERVICE RECORDS
+                    </span>
+
+                    <span class="good"
+                          th:text="${dashboard.totalServices}">
+
+                        0
+
+                    </span>
+
+                </div>
+
+
+                <div class="service-item">
+
+                    <span>
+                        MAINTENANCE
+                    </span>
+
+
+                    <span class="good"
+                          th:if="${!dashboard.serviceDue}">
+
+                        ✓ GOOD
+
+                    </span>
+
+
+                    <span class="warning"
+                          th:if="${dashboard.serviceDue}">
+
+                        ⚠ DUE
+
+                    </span>
+
+                </div>
+
+
+                <div class="service-item">
+
+                    <span>
+                        FUEL RECORDS
+                    </span>
+
+                    <span class="good"
+                          th:text="${dashboard.totalFuelRecords}">
+
+                        0
+
+                    </span>
+
+                </div>
+
+
+                <div class="health-text"
+                     th:text="${dashboard.maintenanceMessage}">
+
+                    Bike maintenance status.
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             ANALYTICS
+             ================================================= -->
+
+        <section class="dashboard-grid"
+                 style="margin-top:20px;">
+
+
+            <!-- FUEL ANALYTICS -->
+
+            <div class="panel">
+
+                <h2>
+                    FUEL ANALYTICS
+                </h2>
+
+                <div class="cost-box">
+
+
+                    <div class="cost-item">
+
+                        <div class="cost-label">
+                            TOTAL FUEL COST
+                        </div>
+
+                        <div class="cost-value">
+
+                            ₹<span
+                                th:text="${dashboard.totalFuelCost}">
+                                0
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="cost-item">
+
+                        <div class="cost-label">
+                            CURRENT MILEAGE
+                        </div>
+
+                        <div class="cost-value">
+
+                            <span
+                                    th:text="${dashboard.mileage}">
+                                0
+                            </span>
+
+                            <small style="font-size:11px;color:#666;">
+                                KM/L
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- FUEL ACTION -->
+
+                <div class="action-buttons">
+
+                    <a class="action-button"
+                       th:href="@{/fuel/add/{id}(id=${dashboard.bike.id})}">
+
+                        ⛽ ADD FUEL
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- SERVICE ANALYTICS -->
+
+            <div class="panel">
+
+                <h2>
+                    SERVICE ANALYTICS
+                </h2>
+
+                <div class="cost-box">
+
+
+                    <div class="cost-item">
+
+                        <div class="cost-label">
+                            TOTAL SERVICE COST
+                        </div>
+
+                        <div class="cost-value">
+
+                            ₹<span
+                                th:text="${dashboard.totalServiceCost}">
+                                0
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="cost-item">
+
+                        <div class="cost-label">
+                            TOTAL RECORDS
+                        </div>
+
+                        <div class="cost-value"
+                             th:text="${dashboard.totalServices}">
+
+                            0
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- SERVICE ACTION -->
+
+                <div class="action-buttons">
+
+                    <a class="action-button"
+                       th:href="@{/services/add/{id}(id=${dashboard.bike.id})}">
+
+                        🔧 ADD SERVICE
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             SERVICE HISTORY
+             ================================================= -->
+
+        <section class="panel history-panel">
+
+            <div class="history-header">
+
+                <h2>
+                    SERVICE HISTORY
+                </h2>
+
+                <a class="action-button"
+                   style="flex:0 0 auto;"
+                   th:href="@{/services/add/{id}(id=${dashboard.bike.id})}">
+
+                    + ADD SERVICE
+
+                </a>
+
+            </div>
+
+
+            <!-- HISTORY EXISTS -->
+
+            <div class="history-table-wrapper"
+                 th:if="${!dashboard.serviceHistory.isEmpty()}">
+
+                <table class="history-table">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>
+                            SERVICE TYPE
+                        </th>
+
+                        <th>
+                            DATE
+                        </th>
+
+                        <th>
+                            ODOMETER
+                        </th>
+
+                        <th>
+                            COST
+                        </th>
+
+                    </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                    <tr th:each="service : ${dashboard.serviceHistory}">
+
+                        <td class="history-type"
+                            th:text="${service.serviceType}">
+
+                            General Service
+
+                        </td>
+
+                        <td th:text="${service.serviceDate}">
+
+                            2026-09-01
+
+                        </td>
+
+                        <td>
+
+                            <span th:text="${service.odometer}">
+                                5000
+                            </span>
+
+                            KM
+
+                        </td>
+
+                        <td class="history-cost">
+
+                            ₹<span th:text="${service.cost}">
+                                1500
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- NO HISTORY -->
+
+            <div class="empty-history"
+                 th:if="${dashboard.serviceHistory.isEmpty()}">
+
+                NO SERVICE HISTORY AVAILABLE
+
+                <br>
+
+                <span style="display:block;margin-top:8px;color:#444;">
+                    Add your first service record to start tracking maintenance.
+                </span>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+</body>
+
+</html>
